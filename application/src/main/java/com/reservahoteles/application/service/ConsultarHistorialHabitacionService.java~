@@ -1,0 +1,24 @@
+package com.reservahoteles.application.service;
+
+import com.reservahoteles.application.dto.RevisionHabitacionDTO;
+import com.reservahoteles.application.port.in.ConsultarHistorialHabitacionUseCase;
+import com.reservahoteles.application.port.out.HabitacionAuditPort;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import com.reservahoteles.application.dto.ConsultarHistorialHabitacionCommand;
+
+
+@Service
+public class ConsultarHistorialHabitacionService implements ConsultarHistorialHabitacionUseCase {
+
+    private final HabitacionAuditPort auditPort;
+
+    public ConsultarHistorialHabitacionService(HabitacionAuditPort auditPort) {
+        this.auditPort = auditPort;
+    }
+
+    @Override
+    public List<RevisionHabitacionDTO> ejecutar(ConsultarHistorialHabitacionCommand cmd) {
+        return auditPort.findRevisions(cmd.idHabitacion());
+    }
+}

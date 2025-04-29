@@ -1,0 +1,12 @@
+package com.reservahoteles.application.dto;
+
+import com.reservahoteles.common.enums.Rol;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record RegistrarExtraCommand(
+        @NotBlank String nombre,
+        @NotNull Double costoAdicional,
+        @NotNull  Long   idActor,
+        @NotNull Rol rolActor
+) {}

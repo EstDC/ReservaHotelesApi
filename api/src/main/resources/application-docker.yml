@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: ReservaHoteles
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://db:3306/reservahoteles?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    username: app
+    password: app_pw
+    hikari:
+      connection-timeout: 30000
+      initialization-fail-timeout: -1
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        envers:
+          autoRegisterListeners: true
+          store_data_at_delete: true
+          revision_on_collection_change: true
+          use_revision_entity_with_native_id: true
+          revision_type_field_name: REVTYPE
+          revision_timestamp_field_name: REVTSTMP
+          revision_number_field_name: REV
+    show-sql: true
+    open-in-view: false
+
+  sql:
+    init:
+      mode: never
+
+logging:
+  level:
+    org.hibernate.tool.schema: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+    com.reservahoteles: DEBUG
+    org.hibernate.envers: DEBUG
+
+server:
+  port: 8083
+  error:
+    include-message: always
+    include-binding-errors: always
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+    tryItOutEnabled: true
+    filter: true
+    display-request-duration: true
+    persist-authorization: true
+    syntax-highlight:
+      activated: true
+      theme: obsidian

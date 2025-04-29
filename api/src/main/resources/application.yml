@@ -1,0 +1,19 @@
+#spring:
+#  datasource:
+#    url:      ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/reservahoteles?useSSL=false&serverTimezone=UTC}
+#    username: ${SPRING_DATASOURCE_USERNAME:app}
+#    password: ${SPRING_DATASOURCE_PASSWORD:app_pw}
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    show-sql: true
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/reservahoteles
+    username: root
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true

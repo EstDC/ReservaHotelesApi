@@ -1,0 +1,13 @@
+Este módulo representa el corazón de la aplicación, donde se define el dominio y se modelan las reglas de negocio sin depender de frameworks externos.
+
+    entity:
+    Aquí se ubican las clases que representan las entidades de dominio, por ejemplo, Hotel, Reserva, Cliente, etc.
+
+    enums:
+    Se pueden colocar enumeraciones que son parte del lenguaje del dominio (por ejemplo, tipos de identificación, estados de reserva, etc.).
+
+    port/in:
+    Define las interfaces que representan los puertos de entrada, es decir, los casos de uso que el dominio expone. Esto puede incluir interfaces para comandos o consultas que se invocan desde la capa de aplicación, de forma que la lógica de negocio esté desacoplada de la forma en que se reciben los datos.
+
+    port/out:
+    Define las interfaces para la salida, es decir, los contratos con los sistemas externos (por ejemplo, interfaces para repositorios, servicios de mensajería, etc.). La implementación concreta de estos puertos se realizará en la capa de infraestructura.

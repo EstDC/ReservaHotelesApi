@@ -1,0 +1,74 @@
+package com.reservahoteles.application.service;
+
+import com.reservahoteles.application.dto.*;
+import com.reservahoteles.application.port.in.ArchivarReservaUseCase;
+import com.reservahoteles.common.enums.EstadoReserva;
+import com.reservahoteles.common.enums.Rol;
+import com.reservahoteles.domain.entity.*;
+import com.reservahoteles.domain.port.out.*;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
+
+@Service
+public class ArchivarReservaService implements ArchivarReservaUseCase {
+
+    private final ReservaRepository          reservaRepo;
+    private final HistorialReservaRepository historialRepo;
+
+    public ArchivarReservaService(ReservaRepository reservaRepo,
+                                  HistorialReservaRepository historialRepo) {
+        this.reservaRepo  = reservaRepo;
+        this.historialRepo = historialRepo;
+    }
+
+    @Override
+    @Transactional
+    public ArchivarReservaResponse ejecutar(ArchivarReservaCommand cmd) {
+
+        /* 1 ── Seguridad *********************************************************/
+        if (cmd.rolActor() != Rol.ADMINISTRADOR) {
+            return fail(cmd.idReserva(), "Solo un administrador puede archivar reservas");
+        }
+
+        /* 2 ── Cargar reserva ****************************************************/
+        Reserva res = reservaRepo.findById(cmd.idReserva())
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Reserva no encontrada (id = " + cmd.idReserva() + ')'));
+
+        /* 3 ── Comprobar estado elegible *****************************************/
+        if (res.getEstadoReserva() != EstadoReserva.FINALIZADA &&
+                res.getEstadoReserva() != EstadoReserva.CANCELADA) {
+            return fail(cmd.idReserva(),
+                    "Solo las reservas FINALIZADAS o CANCELADAS pueden archivarse");
+        }
+
+        /* 4 ── Mapear a HistorialReserva *****************************************/
+        HistorialReserva hist = HistorialReserva.builder()
+                .id(null)                          // autoincrement en la tabla historial
+                .idReserva(res.getId())
+                .idCliente(res.getIdCliente())
+                .idHabitacion(res.getIdHabitacion())
+                .fechaEntrada(res.getFechaEntrada())
+                .fechaSalida(res.getFechaSalida())
+                .estadoReserva(res.getEstadoReserva())
+                .fechaReserva(res.getFechaReserva())
+                .total(res.getTotal())
+                .extras(res.getExtras())           // copia la lista de extras
+                .fechaArchivado(LocalDateTime.now())
+                .build();
+
+        /* 5 ── Persistir dentro de la misma transacción **************************/
+        historialRepo.save(hist);   // 5.a inserta en historial
+        reservaRepo.eliminar(res.getId()); // 5.b borra (o marca) en tabla activa
+
+        return new ArchivarReservaResponse(
+                cmd.idReserva(), "SUCCESS", "Reserva archivada correctamente");
+    }
+
+    // helper
+    private ArchivarReservaResponse fail(Long id, String msg) {
+        return new ArchivarReservaResponse(id, "FAILURE", msg);
+    }
+}

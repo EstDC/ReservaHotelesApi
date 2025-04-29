@@ -1,0 +1,7 @@
+Este módulo se encarga de orquestar la lógica de negocio definida en el dominio para satisfacer los requerimientos de los casos de uso. Aquí se gestionan la transformación de datos y la coordinación de acciones.
+
+    dto:
+    Los Data Transfer Objects (DTO) se utilizan para transferir datos entre la capa de presentación y la aplicación, evitando exponer directamente las entidades de dominio.
+
+    service:
+    Aquí se implementan los servicios de aplicación (casos de uso). Por ejemplo, un HotelService que coordine operaciones de creación, consulta o actualización, utilizando las interfaces definidas en el dominio.

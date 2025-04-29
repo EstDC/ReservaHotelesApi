@@ -1,0 +1,79 @@
+package com.reservahoteles.application.service;
+
+import com.reservahoteles.application.dto.ActualizarEstadoPagoCommand;
+import com.reservahoteles.application.dto.ActualizarEstadoPagoResponse;
+import com.reservahoteles.application.port.in.ActualizarEstadoPagoUseCase;
+import com.reservahoteles.common.enums.EstadoPago;
+import com.reservahoteles.domain.entity.Pago;
+import com.reservahoteles.domain.port.out.PagoRepository;
+import com.reservahoteles.domain.port.out.ReservaRepository;
+import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
+
+@Service
+public class ActualizarEstadoPagoService implements ActualizarEstadoPagoUseCase {
+
+    private final PagoRepository pagoRepo;
+    private final ReservaRepository reservaRepo;
+
+    public ActualizarEstadoPagoService(PagoRepository pagoRepo,
+                                       ReservaRepository reservaRepo) {
+        this.pagoRepo = pagoRepo;
+        this.reservaRepo = reservaRepo;
+    }
+
+    @Override
+    public ActualizarEstadoPagoResponse ejecutar(ActualizarEstadoPagoCommand cmd) {
+        // 1. Verificar que existe el pago
+        Pago pago = pagoRepo.findById(cmd.idPago())
+                .orElseThrow(() -> new NoSuchElementException(
+                        "No existe el pago con id = " + cmd.idPago()
+                ));
+
+        // 2. Verificar existencia de la reserva asociada
+        reservaRepo.findById(pago.getIdReserva())
+                .orElseThrow(() -> new IllegalStateException(
+                        "La reserva asociada al pago no existe: " + pago.getIdReserva()
+                ));
+
+        // 3. Si ya está COMPLETADO o RECHAZADO, no se puede volver a cambiar
+        if (pago.getEstadoPago() == EstadoPago.COMPLETADO
+                || pago.getEstadoPago() == EstadoPago.RECHAZADO) {
+            return new ActualizarEstadoPagoResponse(
+                    cmd.idPago(),
+                    "FAILURE",
+                    "No se puede modificar un pago ya cerrado (estado=" + pago.getEstadoPago() + ")"
+            );
+        }
+
+        // 4. Determinar el nuevo estado automáticamente según la forma de pago
+        EstadoPago nuevoEstado;
+        switch (cmd.formaPago().toUpperCase()) {
+            case "TARJETA":
+                nuevoEstado = EstadoPago.COMPLETADO;
+                break;
+            case "TRANSFERENCIA":
+                nuevoEstado = EstadoPago.PENDIENTE;
+                break;
+            default:
+                return new ActualizarEstadoPagoResponse(
+                        cmd.idPago(),
+                        "FAILURE",
+                        "Método de pago no soportado: " + cmd.formaPago()
+                );
+        }
+
+        // 5. Asignar y persistir
+        pago.setEstadoPago(nuevoEstado);
+        pago.setUltimaActualizacion(LocalDateTime.now());
+        pagoRepo.save(pago);
+
+        // 6. Responder al caller
+        return new ActualizarEstadoPagoResponse(
+                cmd.idPago(),
+                "SUCCESS",
+                "Pago actualizado a estado " + nuevoEstado
+        );
+    }
+}

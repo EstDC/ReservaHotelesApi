@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  # ----------------- BASE DE DATOS -----------------
+#  db:
+#    image: mysql:8.0
+#    container_name: mysql_reservahoteles
+#    restart: unless-stopped
+#    environment:
+#      MYSQL_ROOT_PASSWORD: root_pw
+#      MYSQL_DATABASE:     reservahoteles
+#      MYSQL_USER:         app
+#      MYSQL_PASSWORD:     app_pw
+#    volumes:
+#      - db_data:/var/lib/mysql
+#    ports:
+#      - "3307:3306"
+  db:
+    image: mysql:8.0
+    container_name: mysql_reservahoteles
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pw
+      MYSQL_DATABASE: reservahoteles
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app_pw
+    volumes:
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "app", "-papp_pw"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - my_network
+  # --------------- phpMyAdmin WEB UI ---------------
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin_reservahoteles
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: app
+      PMA_PASSWORD: app_pw
+    ports:
+      - "8082:80"
+    networks:
+      - my_network
+
+  # ----------------- API SPRING BOOT -----------------
+  api:
+    build:
+      context: .                     # raíz del proyecto
+      dockerfile: Dockerfile    # tu Dockerfile multi‑stage
+    container_name: reservahoteles_api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8083
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/reservahoteles?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: app
+      SPRING_DATASOURCE_PASSWORD: app_pw
+    ports:
+      - "8083:8083"   # mapea el 8080 interno al 8083 en tu host
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8083/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - my_network
+
+volumes:
+  db_data:
+
+networks:
+  my_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16

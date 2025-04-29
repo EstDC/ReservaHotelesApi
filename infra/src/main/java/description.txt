@@ -1,0 +1,13 @@
+Este módulo contiene las implementaciones concretas de los contratos definidos en el dominio (puertos). Aquí se integran frameworks y tecnologías específicas, como Spring Data JPA, adaptadores para servicios externos, etc.
+
+    adapter/out:
+    Aquí se colocan los adaptadores que implementan las interfaces definidas en el dominio para la comunicación con sistemas externos. Por ejemplo, un adaptador que implemente la interfaz del repositorio de hoteles usando Spring Data JPA.
+
+    adapter/util:
+    Pueden colocarse utilidades y adaptadores de uso general que faciliten la integración, transformación de datos u otras funciones técnicas.
+
+    entity:
+    En algunos diseños, se vuelve a modelar o se copia la representación de las entidades cuando se requieren anotaciones o estructuras específicas para la persistencia. Dependiendo de la estrategia, se puede optar por mantener la entidad de dominio pura y hacer mapeos en este módulo.
+
+    repository:
+    Aquí se ubican los repositorios concretos, como las interfaces que extienden de JpaRepository en Spring Data JPA, que implementarán los puertos de salida definidos en el dominio.
