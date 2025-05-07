@@ -17,10 +17,8 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
---
--- Base de datos: `reservahoteles`
---
-CREATE DATABASE IF NOT EXISTS reservahoteles;
+DROP DATABASE IF EXISTS reservahoteles;
+CREATE DATABASE reservahoteles;
 USE reservahoteles;
 
 -- --------------------------------------------------------
@@ -328,7 +326,7 @@ ALTER TABLE `historial_reservas`
 --
 ALTER TABLE `historial_reserva_extra`
   ADD PRIMARY KEY (`id_historial`,`id_extra`),
-  ADD KEY `fk_hrex_extra` (`id_extra`);
+  ADD KEY `id_extra` (`id_extra`);
 
 --
 -- Indices de la tabla `hoteles`
@@ -348,7 +346,7 @@ ALTER TABLE `hotel_servicios`
 --
 ALTER TABLE `pagos`
   ADD PRIMARY KEY (`id_pago`),
-  ADD KEY `fk_pago_reserva` (`id_reserva`);
+  ADD KEY `id_reserva` (`id_reserva`);
 
 --
 -- Indices de la tabla `reservas`
@@ -363,7 +361,7 @@ ALTER TABLE `reservas`
 --
 ALTER TABLE `reserva_extra`
   ADD PRIMARY KEY (`id_reserva`,`id_extra`),
-  ADD KEY `fk_res_extra_extra` (`id_extra`);
+  ADD KEY `id_extra` (`id_extra`);
 
 --
 -- Indices de la tabla `servicios`
@@ -476,8 +474,8 @@ ALTER TABLE `historial_reservas`
 -- Filtros para la tabla `historial_reserva_extra`
 --
 ALTER TABLE `historial_reserva_extra`
-  ADD CONSTRAINT `fk_hrex_extra` FOREIGN KEY (`id_extra`) REFERENCES `extras` (`id_extra`),
-  ADD CONSTRAINT `fk_hrex_hist` FOREIGN KEY (`id_historial`) REFERENCES `historial_reservas` (`id_historial`) ON DELETE CASCADE;
+  ADD CONSTRAINT `historial_reserva_extra_ibfk_1` FOREIGN KEY (`id_historial`) REFERENCES `historial_reservas` (`id_historial`) ON DELETE CASCADE,
+  ADD CONSTRAINT `historial_reserva_extra_ibfk_2` FOREIGN KEY (`id_extra`) REFERENCES `extras` (`id_extra`);
 
 --
 -- Filtros para la tabla `hotel_servicios`
@@ -490,7 +488,7 @@ ALTER TABLE `hotel_servicios`
 -- Filtros para la tabla `pagos`
 --
 ALTER TABLE `pagos`
-  ADD CONSTRAINT `fk_pago_reserva` FOREIGN KEY (`id_reserva`) REFERENCES `reservas` (`id_reserva`);
+  ADD CONSTRAINT `pagos_ibfk_1` FOREIGN KEY (`id_reserva`) REFERENCES `reservas` (`id_reserva`);
 
 --
 -- Filtros para la tabla `reservas`
@@ -503,10 +501,7 @@ ALTER TABLE `reservas`
 -- Filtros para la tabla `reserva_extra`
 --
 ALTER TABLE `reserva_extra`
-  ADD CONSTRAINT `fk_res_extra_extra` FOREIGN KEY (`id_extra`) REFERENCES `extras` (`id_extra`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_res_extra_reserva` FOREIGN KEY (`id_reserva`) REFERENCES `reservas` (`id_reserva`) ON DELETE CASCADE;
-COMMIT;
+  ADD CONSTRAINT `reserva_extra_ibfk_1` FOREIGN KEY (`id_reserva`) REFERENCES `reservas` (`id_reserva`) ON DELETE CASCADE,
+  ADD CONSTRAINT `reserva_extra_ibfk_2` FOREIGN KEY (`id_extra`) REFERENCES `extras` (`id_extra`) ON DELETE CASCADE;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+COMMIT;
