@@ -10,51 +10,54 @@ El proyecto sigue los principios de la Arquitectura Hexagonal (también conocida
 - Contiene la lógica de negocio central
 - Define las entidades y reglas de negocio
 - Es independiente de frameworks y tecnologías
-- Ubicación: `com.reservahoteles.domain`
+- Ubicación: `domain/`
 
 ### Capa de Aplicación (Application)
 - Implementa los casos de uso
 - Coordina el flujo entre el dominio y los adaptadores
 - Define los puertos (interfaces) para la comunicación
-- Ubicación: `com.reservahoteles.application`
+- Ubicación: `application/`
 
 ### Capa de Infraestructura (Infrastructure)
 - Implementa los adaptadores para bases de datos, APIs, etc.
 - Contiene la configuración de Spring Boot
 - Maneja la persistencia y comunicación externa
-- Ubicación: `com.reservahoteles.infra`
+- Ubicación: `api/` y `infra/`
 
 ## Estructura del Proyecto
 
 ```
 ReservaHoteles/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── com/
-│   │   │       ├── reservahoteles/
-│   │   │       │   ├── domain/           # Lógica de negocio
-│   │   │       │   │   ├── model/        # Entidades de dominio
-│   │   │       │   │   └── service/      # Servicios de dominio
-│   │   │       │   ├── application/      # Casos de uso
-│   │   │       │   │   ├── port/
-│   │   │       │   │   │   ├── in/       # Puertos de entrada
-│   │   │       │   │   │   └── out/      # Puertos de salida
-│   │   │       │   │   └── service/      # Implementación de casos de uso
-│   │   │       │   └── infra/            # Adaptadores
-│   │   │       │       ├── config/       # Configuración
-│   │   │       │       ├── persistence/  # Repositorios
-│   │   │       │       └── web/          # Controladores REST
-│   │   │       └── security/             # Configuración de seguridad
-│   │   └── resources/
-│   │       └── application.yml
-│   └── test/                             # Tests unitarios y de integración
-├── docker/
-│   ├── mysql/
-│   │   └── init/                        # Scripts de inicialización
-│   └── nginx/
-├── docker-compose.yml
-└── pom.xml
+├── api/                    # Capa de infraestructura - API REST
+│   └── src/
+│       └── main/
+│           └── java/
+│               └── com/
+│                   ├── auth/              # Autenticación y seguridad
+│                   ├── cliente/           # Gestión de clientes
+│                   ├── clienteBancario/   # Gestión de pagos bancarios
+│                   ├── config/            # Configuración de Spring
+│                   ├── credencial/        # Gestión de credenciales
+│                   ├── extra/             # Gestión de extras
+│                   ├── habitacion/        # Gestión de habitaciones
+│                   ├── historialReserva/  # Historial de reservas
+│                   ├── hotel/             # Gestión de hoteles
+│                   ├── pago/              # Gestión de pagos
+│                   ├── reserva/           # Gestión de reservas
+│                   ├── reservahoteles/    # Entidades y DTOs
+│                   ├── security/          # Configuración de seguridad
+│                   └── servicio/          # Gestión de servicios
+├── application/           # Capa de aplicación - Casos de uso
+├── common/               # Utilidades y constantes comunes
+├── domain/              # Capa de dominio - Lógica de negocio
+├── infra/               # Capa de infraestructura - Persistencia
+├── docker/              # Configuración de Docker
+│   ├── mysql/          # Configuración de MySQL
+│   └── nginx/          # Configuración de Nginx
+├── docker-compose.yml   # Configuración de contenedores
+├── Dockerfile          # Configuración de la imagen Docker
+├── pom.xml             # Dependencias del proyecto
+└── application.properties # Configuración de la aplicación
 ```
 
 ## Módulos Principales
