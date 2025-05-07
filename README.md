@@ -123,12 +123,35 @@ ReservaHoteles/
 
 ## Base de Datos
 
-El proyecto utiliza MySQL como base de datos. La estructura incluye:
+El proyecto utiliza MySQL como base de datos. La estructura incluye las siguientes tablas y relaciones:
 
-- Hoteles con sus detalles (ubicación, estrellas, servicios)
-- Habitaciones por hotel (5 por hotel, diferentes tipos y precios)
-- Extras disponibles para las habitaciones
-- Servicios ofrecidos por cada hotel
+### Tablas Principales
+- **clientes**: Información de clientes y administradores
+- **hoteles**: Datos de los hoteles (ubicación, estrellas, contacto)
+- **habitaciones**: Habitaciones por hotel (tipos, precios, estado)
+- **reservas**: Registro de reservas de habitaciones
+- **pagos**: Registro de pagos asociados a reservas
+- **servicios**: Servicios disponibles en los hoteles
+- **extras**: Servicios adicionales para habitaciones
+
+### Tablas de Relación
+- **hotel_servicios**: Asociación entre hoteles y sus servicios
+- **habitacion_extras**: Asociación entre habitaciones y extras disponibles
+- **reserva_extra**: Extras seleccionados en cada reserva
+
+### Tablas de Seguridad
+- **credenciales**: Gestión de autenticación y seguridad
+- **cliente_bancario**: Información bancaria de los clientes
+
+### Tablas de Auditoría
+- **historial_reservas**: Registro histórico de reservas
+- **historial_reserva_extra**: Historial de extras en reservas
+
+### Estado Actual
+- ✅ Tablas y relaciones definidas
+- ✅ Datos de prueba para hoteles y habitaciones
+- ✅ Datos de prueba para extras y servicios
+- ⏳ Pendiente: Datos de prueba para clientes y reservas
 
 ## Configuración
 
