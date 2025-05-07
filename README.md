@@ -69,21 +69,22 @@ ReservaHoteles/
 - Ubicación: `api/`
 
 ### Módulo Application
-- Implementa los casos de uso de la aplicación
-- Coordina la lógica de negocio entre el dominio y la infraestructura
-- Define los puertos de entrada y salida
+- Implementa toda la lógica de negocio
+- Contiene los casos de uso y servicios
+- Coordina las operaciones entre entidades
+- Maneja las validaciones y reglas de negocio
 - Ubicación: `application/`
 
 ### Módulo Domain
-- Contiene la lógica de negocio central
-- Define las entidades y reglas de negocio
-- Es independiente de frameworks y tecnologías
+- Define las entidades del dominio
+- Contiene los puertos (interfaces) para la persistencia
+- Define la estructura de datos
 - Ubicación: `domain/`
 
 ### Módulo Infra
 - Implementa la capa de persistencia
 - Maneja la conexión con la base de datos
-- Implementa los repositorios
+- Implementa los repositorios definidos en domain
 - Ubicación: `infra/`
 
 ### Módulo Common
