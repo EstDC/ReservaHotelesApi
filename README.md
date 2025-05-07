@@ -62,25 +62,41 @@ ReservaHoteles/
 
 ## Módulos Principales
 
-### Módulo de Hoteles
-- Gestión de hoteles y sus servicios
-- Ubicación: `com.reservahoteles.domain.model.hotel`
-- Casos de uso: `com.reservahoteles.application.port.in.hotel`
+### Módulo API
+- Contiene los controladores REST y la configuración de Spring Boot
+- Implementa los endpoints de la API
+- Maneja la autenticación y seguridad
+- Ubicación: `api/`
 
-### Módulo de Habitaciones
-- Gestión de habitaciones y extras
-- Ubicación: `com.reservahoteles.domain.model.habitacion`
-- Casos de uso: `com.reservahoteles.application.port.in.habitacion`
+### Módulo Application
+- Implementa los casos de uso de la aplicación
+- Coordina la lógica de negocio entre el dominio y la infraestructura
+- Define los puertos de entrada y salida
+- Ubicación: `application/`
 
-### Módulo de Reservas
-- Gestión de reservas y pagos
-- Ubicación: `com.reservahoteles.domain.model.reserva`
-- Casos de uso: `com.reservahoteles.application.port.in.reserva`
+### Módulo Domain
+- Contiene la lógica de negocio central
+- Define las entidades y reglas de negocio
+- Es independiente de frameworks y tecnologías
+- Ubicación: `domain/`
 
-### Módulo de Clientes
-- Gestión de clientes y autenticación
-- Ubicación: `com.reservahoteles.domain.model.cliente`
-- Casos de uso: `com.reservahoteles.application.port.in.cliente`
+### Módulo Infra
+- Implementa la capa de persistencia
+- Maneja la conexión con la base de datos
+- Implementa los repositorios
+- Ubicación: `infra/`
+
+### Módulo Common
+- Contiene utilidades y constantes compartidas
+- Define enums y excepciones comunes
+- Proporciona funcionalidades transversales
+- Ubicación: `common/`
+
+### Módulo Docker
+- Configuración de contenedores
+- Scripts de inicialización de la base de datos
+- Configuración de Nginx
+- Ubicación: `docker/`
 
 ## Patrones de Diseño
 
